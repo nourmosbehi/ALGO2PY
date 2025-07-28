@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur - Algo2Py</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/converter.css') }}">
+<link rel="icon" href="{{ url_for('static', filename='Photos/Icon.png') }}" type="image/x-icon">
+<link rel="shortcut icon" href="{{ url_for('static', filename='Photos/Icon.png') }}" type="image/x-icon">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-code"></i>
+                <span>Algo2Py</span>
+            </a>
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+        </div>
+    </nav>
+    
+    <main class="converter-container">
+        <div class="converter-header">
+            <h1 class="converter-title">Convertisseur Premium</h1>
+            <p class="converter-subtitle">Transformez vos algorithmes en code Python exécutable et vice versa</p>
+        </div>
+        
+        <div class="converter-box">
+            <div class="converter-toolbar">
+                <div class="converter-options">
+                    <div class="select-box">
+                        <select id="conversion-type">
+                            <option value="algo_to_python">Algorithme → Python</option>
+                            <option value="python_to_algo">Python → Algorithme</option>
+                        </select>
+                    </div>
+                    <button class="action-btn btn-outline" id="clear-btn">
+                        <i class="fas fa-trash-alt"></i>
+                        Effacer
+                    </button>
+                </div>
+                <button class="action-btn btn-primary" id="convert-btn">
+                    <i class="fas fa-exchange-alt"></i>
+                    Convertir
+                </button>
+            </div>
+            
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <label class="editor-label">
+                        <i class="fas fa-keyboard"></i>
+                        Entrée
+                    </label>
+                    <textarea id="input-text" class="editor-input" placeholder="Saisissez votre algorithme ou code Python ici..."></textarea>
+                </div>
+                
+                <div class="editor-panel">
+                    <label class="editor-label">
+                        <i class="fas fa-file-code"></i>
+                        Résultat
+                    </label>
+                    <pre id="output-text" class="editor-output"></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="examples-section">
+            <h2 class="examples-title">
+                <i class="fas fa-lightbulb"></i>
+                Exemples rapides
+            </h2>
+            
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-header">
+                        Tri par sélection
+                    </div>
+                    <div class="example-content">
+                        <pre class="example-code">Fonction tri_selection(tableau):
+    Pour i de 0 à longueur(tableau) - 1 Faire
+        min_index = i
+        Pour j de i+1 à longueur(tableau) Faire
+            Si tableau[j] < tableau[min_index] Alors
+                min_index = j
+        Fin Pour
+        échanger(tableau, min_index, i)
+    Fin Pour
+Fin Fonction</pre>
+                        <button class="action-btn btn-outline try-btn" data-example="selection-sort">
+                            <i class="fas fa-play"></i>
+                            Essayer cet exemple
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-header">
+                        Recherche binaire
+                    </div>
+                    <div class="example-content">
+                        <pre class="example-code">Fonction recherche_binaire(tableau, cible):
+    gauche = 0
+    droite = longueur(tableau) - 1
+    Tant que gauche ≤ droite Faire
+        milieu = (gauche + droite) // 2
+        Si tableau[milieu] == cible Alors
+            Retourner milieu
+        Sinon Si tableau[milieu] < cible Alors
+            gauche = milieu + 1
+        Sinon
+            droite = milieu - 1
+        Fin Si
+    Fin Tant que
+    Retourner -1
+Fin Fonction</pre>
+                        <button class="action-btn btn-outline try-btn" data-example="binary-search">
+                            <i class="fas fa-play"></i>
+                            Essayer cet exemple
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+ <script>
+    document.getElementById('convert-btn').addEventListener('click', function() {
+        const input = document.getElementById('input-text').value;
+        const conversionType = document.getElementById('conversion-type').value;
+        
+        fetch('/converter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `input_text=${encodeURIComponent(input)}&conversion_type=${conversionType}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('output-text').textContent = data.output || data.error;
+        });
+    });
+    
+    document.getElementById('clear-btn').addEventListener('click', function() {
+        document.getElementById('input-text').value = '';
+        document.getElementById('output-text').textContent = '';
+    });
+    </script>
+</body>
+</html>
